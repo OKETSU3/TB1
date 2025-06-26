@@ -65,9 +65,18 @@
 - **Accessibility**: Well-documented test requirements and implementation guides
 - **Responsive Behavior**: Fail-fast approach with comprehensive error handling
 
+### Exception Handling Pattern
+- **Context**: When creating custom exception hierarchies for comprehensive error handling
+- **Implementation**: Enhanced base exception class with message and cause support for exception chaining
+- **Key Components**: TradebotError base class with __init__ method accepting optional message and cause
+- **Flow**: Exception creation → Store message and cause attributes → Call super().__init__(message) → Enable chaining
+- **Benefits**: Richer error context, better debugging, automatic inheritance by all derived exceptions
+- **Gotchas**: Always call super().__init__() to maintain proper Exception behavior
+
 ### Cross-Cutting Concerns
 - **Logging**: Centralized logging with appropriate levels (INFO for API calls, ERROR for failures)
 - **Error Handling**: Selective exception propagation (InvalidSymbolError passthrough, others wrapped)
+- **Exception Chaining**: Enhanced TradebotError base class supports message and cause tracking
 - **Security**: Environment variable-based API key management, no secrets in code
 - **Performance Monitoring**: API usage tracking and cache hit rate monitoring
 
@@ -187,9 +196,16 @@
   - **Impact**: Improved performance and code clarity
   - **Prevention**: Code review checklist item for import placement
 
+- **TradebotError Base Class Enhancement**: Added message and cause support for exception chaining
+  - **Problem**: Base exception class used simple `pass` without error context or chaining support
+  - **Solution**: Add __init__ method accepting optional message and cause parameters
+  - **Impact**: Richer error context, better debugging, automatic inheritance by all derived exceptions
+  - **Prevention**: Always implement proper __init__ methods in custom exception base classes
+
 ### Code Quality Improvements
 - **Import Statement Organization**: Establish clear pattern for module-level imports
 - **Exception Handling Consistency**: Maintain selective propagation pattern across modules
+- **Exception Class Design**: Enhanced base classes with proper initialization and context tracking
 
 ---
 
