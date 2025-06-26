@@ -1,0 +1,29 @@
+# Core dependencies for trade-bot project
+
+# Data manipulation and analysis
+pandas>=2.0.0
+
+# Financial data API
+twelvedata>=1.2.0
+
+# Database ORM
+peewee>=3.16.0
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# Time manipulation for testing
+freezegun>=1.2.0
+
+# HTTP mocking for testing
+requests-mock>=1.10.0
+
+# Development tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+
+# YAML configuration support
+PyYAML>=6.0
