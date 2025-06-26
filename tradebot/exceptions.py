@@ -8,7 +8,18 @@ for consistent error handling and meaningful error messages.
 
 class TradebotError(Exception):
     """Base exception for all tradebot-related errors."""
-    pass
+    
+    def __init__(self, message=None, cause=None):
+        """
+        Initialize TradebotError with optional message and cause.
+        
+        Args:
+            message (str, optional): Error message describing what went wrong
+            cause (Exception, optional): The underlying exception that caused this error
+        """
+        super().__init__(message)
+        self.message = message
+        self.cause = cause
 
 
 class DataFetchError(TradebotError):
