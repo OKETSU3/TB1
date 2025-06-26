@@ -14,6 +14,8 @@ from twelvedata import TDClient
 from typing import Optional, Dict, Any
 import logging
 
+from tradebot.exceptions import DataFetchError, InvalidSymbolError, QuotaExceededError
+
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +77,6 @@ class DataFetcher:
         
         # Check quota before API call (CRITICAL)
         if not self.rate_limiter.can_make_request():
-            from tradebot.exceptions import QuotaExceededError
             raise QuotaExceededError("Daily API quota exceeded")
         
         # Fetch from Twelve Data API
@@ -102,7 +103,6 @@ class DataFetcher:
             return validated_data
             
         except Exception as e:
-            from tradebot.exceptions import DataFetchError, InvalidSymbolError
             logger.error(f"Failed to fetch data for {symbol}: {e}")
             
             # Propagate specific exceptions without wrapping
