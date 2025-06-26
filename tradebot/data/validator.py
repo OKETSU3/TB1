@@ -14,6 +14,8 @@ import numpy as np
 from typing import List, Optional
 import logging
 
+from tradebot.exceptions import ValidationError
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,7 +51,6 @@ class DataValidator:
             ValidationError: If data fails any validation checks
         """
         if data is None or data.empty:
-            from tradebot.exceptions import ValidationError
             raise ValidationError("Data is empty or None")
         
         # Check required columns
@@ -72,7 +73,6 @@ class DataValidator:
                 missing_columns.append(col)
         
         if missing_columns:
-            from tradebot.exceptions import ValidationError
             raise ValidationError(f"Missing required columns: {missing_columns}")
     
     def _validate_data_types(self, data: pd.DataFrame) -> None:
@@ -83,8 +83,7 @@ class DataValidator:
                 try:
                     pd.to_numeric(data[col], errors='raise')
                 except (ValueError, TypeError) as e:
-                    from tradebot.exceptions import ValidationError
-                    raise ValidationError(f"Column '{col}' contains non-numeric data: {e}")
+                    raise ValidationError(f"Column '{col}' contains non-numeric data: {e}") from e
     
     def _validate_chronological_order(self, data: pd.DataFrame) -> None:
         """Validate that data is in chronological order."""
@@ -92,11 +91,9 @@ class DataValidator:
             # Try to convert index to datetime if possible
             try:
                 data.index = pd.to_datetime(data.index)
-            except (ValueError, TypeError):
-                from tradebot.exceptions import ValidationError
-                raise ValidationError("Index is not a valid datetime index")
+            except (ValueError, TypeError) as e:
+                raise ValidationError("Index is not a valid datetime index") from e
         
         # Check if dates are in chronological order
         if not data.index.is_monotonic_increasing:
-            from tradebot.exceptions import ValidationError
             raise ValidationError("Data is not in chronological order")
