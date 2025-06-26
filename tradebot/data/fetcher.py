@@ -15,6 +15,7 @@ from typing import Optional, Dict, Any
 import logging
 
 from tradebot.exceptions import DataFetchError, InvalidSymbolError, QuotaExceededError
+from tradebot.data.validator import DataValidator
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +125,5 @@ class DataFetcher:
             raise ValueError("Empty data received from API")
         
         # Use DataValidator for comprehensive validation
-        from tradebot.data.validator import DataValidator
         validator = DataValidator()
         return validator.validate(data)
