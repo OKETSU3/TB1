@@ -107,6 +107,19 @@
 - **Generic Exception Handling**: Don't wrap all exceptions - use selective propagation for specific errors
 - **Missing Quota Checks**: Always verify rate limiter before making API calls
 
+### Exception Chaining Anti-Pattern
+- **Problem**: Raising custom exceptions without preserving original exception context
+- **Symptoms**: 
+  - Exception handlers using `raise CustomException(...)` without `from e`
+  - Loss of original stack trace and debugging information
+  - Incomplete error context for troubleshooting
+- **Root Cause**: Missing awareness of Python exception chaining best practices
+- **Impact**: Reduced debugging capability, harder error diagnosis, incomplete error reporting
+- **Avoidance Strategy**: Always use `raise CustomException(...) from original_exception` when re-raising
+- **Detection**: Code review for exception handlers missing `from e` syntax
+- **Resolution**: Add `from e` to all custom exception re-raising statements
+- **Related Patterns**: Exception handling pattern with proper context preservation
+
 ---
 
 ## 4. Technology Stack and Selection Rationale
@@ -202,6 +215,20 @@
   - **Impact**: Richer error context, better debugging, automatic inheritance by all derived exceptions
   - **Prevention**: Always implement proper __init__ methods in custom exception base classes
 
+- **Exception Chaining Implementation**: Fixed missing exception chaining in ConfigManager
+  - **Problem**: ConfigurationError exceptions raised without preserving original exception context
+  - **Symptoms**: 
+    - `raise ConfigurationError(...)` without `from e` in exception handlers
+    - Loss of original exception stack trace and debugging information
+    - Difficult troubleshooting of configuration parsing errors
+  - **Solution**: Add `from e` to all exception re-raising statements
+    - `raise ConfigurationError(...) from e` for YAML parsing errors (lines 98-103)
+    - `raise ConfigurationError(...) from e` for file loading errors (lines 98-103)
+    - `raise ConfigurationError(...) from e` for environment variable parsing errors (lines 133-135)
+  - **Impact**: Preserved full exception context for better debugging and error tracking
+  - **Prevention**: Code review checklist requiring exception chaining with `from e` syntax
+  - **Pattern**: Always use `raise CustomException(...) from original_exception` when re-raising
+
 ### Code Quality Improvements
 - **Import Statement Organization**: Establish clear pattern for module-level imports
 - **Exception Handling Consistency**: Maintain selective propagation pattern across modules
@@ -223,5 +250,8 @@
 
 ### Version History
 - **Last Updated**: 2025-01-26
-- **Version**: 1.0
-- **Major Changes**: Initial creation documenting exception import optimization pattern
+- **Version**: 1.1
+- **Major Changes**: 
+  - Initial creation documenting exception import optimization pattern
+  - Added exception chaining anti-pattern and fix documentation
+  - Documented ConfigManager exception handling improvements
