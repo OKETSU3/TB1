@@ -12,6 +12,7 @@ This module provides the RateLimiter class which handles:
 import sqlite3
 import time
 import threading
+import tempfile
 from datetime import datetime, date
 from typing import Dict, Any, Optional
 import logging
@@ -31,13 +32,13 @@ class RateLimiter:
     - Provides quota reset functionality at daily boundaries
     """
     
-    def __init__(self, daily_limit: int = 800, min_interval: float = 0.1, storage_path: Optional[str] = None):
+    def __init__(self, daily_limit: int = 800, min_interval: float = 7.5, storage_path: Optional[str] = None):
         """
         Initialize RateLimiter with quota parameters.
         
         Args:
             daily_limit: Maximum requests allowed per day
-            min_interval: Minimum seconds between requests
+            min_interval: Minimum seconds between requests (default 7.5s = 8 req/min)
             storage_path: Path to SQLite database for persistent storage
             
         Raises:
@@ -45,7 +46,7 @@ class RateLimiter:
         """
         self.daily_limit = daily_limit
         self.min_interval = min_interval
-        self.storage_path = storage_path or "quota_tracking.db"
+        self.storage_path = storage_path or os.path.join(tempfile.gettempdir(), "quota_tracking.db")
         
         # Thread safety
         self._lock = threading.Lock()
