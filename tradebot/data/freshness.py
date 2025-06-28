@@ -270,21 +270,19 @@ class FreshnessManager:
             logger.error(f"Failed to cleanup old cache: {e}")
             return 0
     
-    def invalidate_cache_entry(self, symbol: str, start_date: str, end_date: str) -> bool:
+    def invalidate_cache_entry(self, symbol: str) -> bool:
         """
         Manually invalidate a specific cache entry.
         
         Args:
             symbol: Stock symbol
-            start_date: Start date in YYYY-MM-DD format
-            end_date: End date in YYYY-MM-DD format
             
         Returns:
             True if successfully invalidated, False otherwise
         """
         try:
             # Log the cache entry being invalidated for audit purposes
-            logger.info(f"Invalidating cache entry for {symbol} ({start_date} to {end_date})")
+            logger.info(f"Invalidating cache entry for {symbol}")
             
             # Remove the specific cache entry for the symbol
             deleted_count = self.cache.clear_cache(symbol=symbol)
@@ -292,9 +290,9 @@ class FreshnessManager:
             if deleted_count > 0:
                 logger.info(f"Invalidated cache for {symbol}: {deleted_count} records removed")
                 return True
-            else:
-                logger.debug(f"No cache found to invalidate for {symbol}")
-                return False
+            
+            logger.debug(f"No cache found to invalidate for {symbol}")
+            return False
                 
         except Exception as e:
             logger.error(f"Failed to invalidate cache for {symbol}: {e}")
