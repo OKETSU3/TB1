@@ -232,7 +232,7 @@ class RateLimiter:
                 'used': self._current_usage['used'],
                 'limit': self.daily_limit,
                 'remaining': self.daily_limit - self._current_usage['used'],
-                'percentage': (self._current_usage['used'] / self.daily_limit) * 100
+                'percentage': (self._current_usage['used'] / self.daily_limit) * 100 if self.daily_limit > 0 else 0
             }
     
     def _reset_daily_quota(self) -> None:
