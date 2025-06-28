@@ -97,10 +97,10 @@ class ConfigManager:
             
         except yaml.YAMLError as e:
             from tradebot.exceptions import ConfigurationError
-            raise ConfigurationError(f"Invalid YAML format in {self.config_path}: {e}")
+            raise ConfigurationError(f"Invalid YAML format in {self.config_path}: {e}") from e
         except Exception as e:
             from tradebot.exceptions import ConfigurationError
-            raise ConfigurationError(f"Failed to load configuration from {self.config_path}: {e}")
+            raise ConfigurationError(f"Failed to load configuration from {self.config_path}: {e}") from e
     
     def _merge_configs(self, base_config: Dict[str, Any], file_config: Dict[str, Any]) -> Dict[str, Any]:
         """Merge file configuration into base configuration."""
@@ -132,7 +132,7 @@ class ConfigManager:
                     
                 except ValueError as e:
                     from tradebot.exceptions import ConfigurationError
-                    raise ConfigurationError(f"Invalid value for environment variable {env_var}: {env_value}")
+                    raise ConfigurationError(f"Invalid value for environment variable {env_var}: {env_value}") from e
         
         return config
     
