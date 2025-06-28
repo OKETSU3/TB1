@@ -79,7 +79,7 @@ class RateLimiter:
             
         except sqlite3.Error as e:
             logger.error(f"Failed to initialize quota database: {e}")
-            raise RuntimeError(f"Quota database initialization failed: {e}")
+            raise RuntimeError(f"Quota database initialization failed: {e}") from e
     
     def _load_daily_usage(self) -> Dict[str, Any]:
         """Load current day's quota usage from database."""
