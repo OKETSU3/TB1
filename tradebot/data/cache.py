@@ -12,13 +12,61 @@ import pandas as pd
 import logging
 import pickle
 import os
-from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from datetime import datetime, timedelta, date
+from typing import Optional, Dict, Any, Union
 from peewee import DoesNotExist, IntegrityError
 
 from .models import StockData, CacheMetadata, database, create_tables
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_date(date_input: Union[datetime, date, pd.Timestamp, str, int, float]) -> date:
+    """
+    Convert various date formats to a consistent date object.
+    
+    Args:
+        date_input: Date in various formats (datetime, date, timestamp, string, etc.)
+        
+    Returns:
+        date: Normalized date object
+        
+    Raises:
+        ValueError: If date_input cannot be converted to a valid date
+    """
+    if isinstance(date_input, date):
+        return date_input
+    elif isinstance(date_input, datetime):
+        return date_input.date()
+    elif hasattr(date_input, 'date') and callable(getattr(date_input, 'date')):
+        # Handle pandas Timestamp and similar objects
+        return date_input.date()
+    elif isinstance(date_input, (int, float)):
+        # Handle Unix timestamps (seconds or milliseconds)
+        try:
+            # Try seconds first
+            if date_input > 1e10:  # Likely milliseconds
+                timestamp = date_input / 1000
+            else:
+                timestamp = date_input
+            return datetime.fromtimestamp(timestamp).date()
+        except (ValueError, OSError):
+            raise ValueError(f"Invalid timestamp: {date_input}")
+    elif isinstance(date_input, str):
+        # Handle string dates in common formats
+        try:
+            # Try common date formats
+            for fmt in ['%Y-%m-%d', '%Y-%m-%d %H:%M:%S', '%Y/%m/%d', '%m/%d/%Y', '%d/%m/%Y']:
+                try:
+                    return datetime.strptime(date_input, fmt).date()
+                except ValueError:
+                    continue
+            # Try pandas to_datetime as fallback
+            return pd.to_datetime(date_input).date()
+        except Exception:
+            raise ValueError(f"Unable to parse date string: {date_input}")
+    else:
+        raise ValueError(f"Unsupported date type: {type(date_input)} for value: {date_input}")
 
 
 class DataCache:
@@ -86,7 +134,7 @@ class DataCache:
                     try:
                         StockData.create(
                             symbol=symbol,
-                            date=date_index.date() if hasattr(date_index, 'date') else date_index,
+                            date=_normalize_date(date_index),
                             open_price=float(row['open']),
                             high_price=float(row['high']),
                             low_price=float(row['low']),
@@ -104,7 +152,7 @@ class DataCache:
                             volume=int(row['volume'])
                         ).where(
                             (StockData.symbol == symbol) & 
-                            (StockData.date == (date_index.date() if hasattr(date_index, 'date') else date_index))
+                            (StockData.date == _normalize_date(date_index))
                         ).execute()
                         records_stored += 1
                 
