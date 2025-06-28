@@ -138,6 +138,7 @@ class RateLimiter:
                 
         except sqlite3.Error as e:
             logger.error(f"Failed to save quota usage: {e}")
+            raise
     
     def can_make_request(self) -> bool:
         """
