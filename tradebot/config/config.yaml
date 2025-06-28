@@ -1,0 +1,26 @@
+# Default configuration for Twelve Data Collection Module
+# This file provides default values for the trading bot configuration
+
+api:
+  # API request timeout in seconds
+  timeout: 30
+  
+  # Number of retry attempts for failed API calls
+  retry_count: 3
+  
+  # Daily API request limit (free tier: 800 requests/day)
+  daily_limit: 800
+
+cache:
+  # Data freshness threshold in hours
+  freshness_hours: 24
+  
+  # Maximum cache size in megabytes
+  max_size_mb: 100
+
+# Note: Environment variables can override these values:
+# - TWELVE_DATA_TIMEOUT: Override api.timeout
+# - TWELVE_DATA_RETRY_COUNT: Override api.retry_count  
+# - TWELVE_DATA_DAILY_LIMIT: Override api.daily_limit
+# - CACHE_FRESHNESS_HOURS: Override cache.freshness_hours
+# - CACHE_MAX_SIZE_MB: Override cache.max_size_mb
