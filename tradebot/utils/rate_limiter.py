@@ -249,12 +249,30 @@ class RateLimiter:
         
         logger.info(f"Daily quota reset: {old_date} -> {today}")
     
-    def reset_quota(self) -> None:
+    def reset_quota(self, force: bool = False) -> None:
         """
         Manually reset quota (for testing purposes).
         
         WARNING: This should only be used in testing environments.
+        
+        Args:
+            force (bool): Must be True to proceed with quota reset.
+                         This is a safety measure to prevent accidental usage.
+        
+        Raises:
+            ValueError: If force parameter is not True
+            RuntimeError: If ENVIRONMENT is set to 'production'
         """
+        # Safety check: force parameter must be explicitly True
+        if force is not True:
+            raise ValueError("reset_quota requires force=True parameter to prevent accidental usage")
+        
+        # Safety check: prevent usage in production environments
+        import os
+        environment = os.getenv('ENVIRONMENT', '').lower()
+        if environment == 'production':
+            raise RuntimeError("reset_quota is disabled in production environments")
+        
         with self._lock:
             today = date.today().isoformat()
             self._current_usage = {
