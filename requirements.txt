@@ -27,3 +27,6 @@ mypy>=1.0.0
 
 # YAML configuration support
 PyYAML>=6.0
+
+# System monitoring for performance optimization
+psutil>=5.9.0

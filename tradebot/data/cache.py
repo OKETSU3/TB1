@@ -378,3 +378,36 @@ class DataCache:
                 'newest_data': None,
                 'database_path': database.database
             }
+    
+    def build_query(self, symbol: str, start_date: str, end_date: str) -> Any:
+        """
+        Build database query for performance optimization.
+        
+        Args:
+            symbol: Stock symbol
+            start_date: Start date for query
+            end_date: End date for query
+            
+        Returns:
+            Database query object
+        """
+        try:
+            start_date_obj = _normalize_date(start_date)
+            end_date_obj = _normalize_date(end_date)
+            
+            # Build optimized query with proper indexing
+            query = (StockData
+                    .select()
+                    .where(
+                        (StockData.symbol == symbol) &
+                        (StockData.date >= start_date_obj) &
+                        (StockData.date <= end_date_obj)
+                    )
+                    .order_by(StockData.date))
+            
+            logger.debug(f"Built query for {symbol} from {start_date} to {end_date}")
+            return query
+            
+        except Exception as e:
+            logger.error(f"Failed to build query for {symbol}: {e}")
+            raise
