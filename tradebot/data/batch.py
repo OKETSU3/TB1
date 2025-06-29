@@ -205,7 +205,7 @@ class BatchProcessor:
                 raise e
                 
             # Wrap other exceptions in DataFetchError
-            raise DataFetchError(f"Unable to fetch data for {symbol}")
+            raise DataFetchError(f"Unable to fetch data for {symbol}") from e
     
     def bulk_store_results(self, results: Dict[str, pd.DataFrame], start_date: str, end_date: str) -> int:
         """

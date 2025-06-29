@@ -4,6 +4,8 @@
 
 This document provides comprehensive test tasks for phase-by-phase validation of the Twelve Data collection module implementation. Each test task corresponds directly to implementation tasks in tasks.md, ensuring quality validation while strictly protecting API quota usage.
 
+**IMPORTANT**: Before implementing any test, you MUST read `.claude/project-knowledge.md` to understand established patterns, anti-patterns, and lessons learned. Use it as a reference throughout test development to follow best practices and avoid known pitfalls.
+
 ### Test Objectives
 - Validate each phase completion before advancing to next implementation phase
 - Ensure API quota management works correctly (800 requests/day limit protection)

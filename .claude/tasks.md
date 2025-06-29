@@ -4,6 +4,8 @@
 
 This document provides a structured, phase-based approach for implementing a comprehensive data collection module using Twelve Data API for the US Stock Market Algorithmic Trading Analysis Platform. The implementation is broken down into manageable, sequential tasks with clear goals, implementation details, and verification criteria.
 
+**IMPORTANT**: Before implementing any task, you MUST read `.claude/project-knowledge.md` to understand established patterns, anti-patterns, and lessons learned. Use it as a reference throughout development to avoid known issues and follow established best practices.
+
 ### Project Objectives
 - Build a robust data collection module for US equity market data using professional-grade API
 - Implement efficient caching and rate limiting for Twelve Data API (800 requests/day free tier)
