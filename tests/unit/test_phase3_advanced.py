@@ -144,12 +144,15 @@ class TestBatchProcessing:
     """T3.2 Batch Processing Validation (Multi-symbol with Quota Management)"""
     
     @pytest.fixture
-    def batch_processor(self, tmp_path):
+    def batch_processor(self, tmp_path, monkeypatch):
         """Create BatchProcessor instance for testing"""
         from tradebot.data.batch import BatchProcessor
         from tradebot.config.manager import ConfigManager
         from tradebot.utils.rate_limiter import RateLimiter
         from tradebot.data.cache import DataCache
+        
+        # Set up API key for testing
+        monkeypatch.setenv("TWELVE_DATA_API_KEY", "test_api_key")
         
         # Create test dependencies
         config = ConfigManager()

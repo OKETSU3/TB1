@@ -215,16 +215,18 @@
   - **Impact**: Richer error context, better debugging, automatic inheritance by all derived exceptions
   - **Prevention**: Always implement proper __init__ methods in custom exception base classes
 
-- **Exception Chaining Implementation**: Fixed missing exception chaining in ConfigManager
-  - **Problem**: ConfigurationError exceptions raised without preserving original exception context
+- **Exception Chaining Implementation**: Fixed missing exception chaining in ConfigManager and BatchProcessor
+  - **Problem**: ConfigurationError and DataFetchError exceptions raised without preserving original exception context
   - **Symptoms**: 
     - `raise ConfigurationError(...)` without `from e` in exception handlers
+    - `raise DataFetchError(...)` without `from e` in batch processing error handling
     - Loss of original exception stack trace and debugging information
-    - Difficult troubleshooting of configuration parsing errors
+    - Difficult troubleshooting of configuration parsing and batch processing errors
   - **Solution**: Add `from e` to all exception re-raising statements
     - `raise ConfigurationError(...) from e` for YAML parsing errors (lines 98-103)
     - `raise ConfigurationError(...) from e` for file loading errors (lines 98-103)
     - `raise ConfigurationError(...) from e` for environment variable parsing errors (lines 133-135)
+    - `raise DataFetchError(...) from e` for batch processing errors (tradebot/data/batch.py:208)
   - **Impact**: Preserved full exception context for better debugging and error tracking
   - **Prevention**: Code review checklist requiring exception chaining with `from e` syntax
   - **Pattern**: Always use `raise CustomException(...) from original_exception` when re-raising
