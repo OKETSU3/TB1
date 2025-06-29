@@ -1,0 +1,3 @@
+[submodule "project-templates"]
+	path = project-templates
+	url = https://github.com/OKETSU3/CCTemplates.git
